@@ -27,10 +27,16 @@ MAINTAINER Elmar Weber <elmar(.)weber(@)cupenya(.)com>
 USER root
 RUN curl -sL https://deb.nodesource.com/setup_4.x | bash - && \
    apt-get update && \
-   apt-get install -y nodejs
+   apt-get install -y nodejs && \
+   npm --global install gulp && \
+   npm --global install bower && \
+   # fix permissions done during install
+   chown jenkins:jenkins -R /home/jenkins/.npm
 
-RUN npm --global install gulp
-RUN npm --global install bower
+# add ES plugin
+COPY elasticsearch-business-hours-2-3-3-SNAPSHOT.zip /tmp
+RUN /usr/share/elasticsearch/bin/plugin install -t 30s file:///tmp/elasticsearch-business-hours-2-3-3-SNAPSHOT.zip && \
+  rm /tmp/elasticsearch-business-hours-2-3-3-SNAPSHOT.zip
 
 # reset jenkins user from parent
 USER jenkins
