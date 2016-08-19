@@ -38,10 +38,14 @@ COPY elasticsearch-business-hours-2-3-3-SNAPSHOT.zip /tmp
 RUN /usr/share/elasticsearch/bin/plugin install -t 30s file:///tmp/elasticsearch-business-hours-2-3-3-SNAPSHOT.zip && \
   rm /tmp/elasticsearch-business-hours-2-3-3-SNAPSHOT.zip
 
-RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D && \
-    echo deb https://apt.dockerproject.org/repo ubuntu-trusty main > /etc/apt/sources.list.d/docker.list && \
-    apt-get update && \
-    apt-get install -y docker.io
 
-# reset jenkins user from parent
-USER jenkins
+# add docker and setup script for docker
+USER root
+
+RUN curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-1.12.1.tgz && tar --strip-components=1 -xvzf docker-1.12.1.tgz -C /usr/local/bin
+
+COPY setup-docker-and-start-jenkins.sh /setup-docker-and-start-jenkins.sh
+RUN chmod 755 /setup-docker-and-start-jenkins.sh
+
+# overwrite default entry point to wrap docker user and group creation
+ENTRYPOINT ["/setup-docker-and-start-jenkins.sh"]
