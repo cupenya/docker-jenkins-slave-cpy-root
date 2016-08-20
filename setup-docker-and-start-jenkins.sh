@@ -25,4 +25,4 @@ if ! id -nG "$JUSER" | grep -qw "$DOCKER_GROUP"; then
 	adduser $JUSER $DOCKER_GROUP
 fi
 
-exec su $JUSER -c "/usr/local/bin/jenkins-slave $@"
+exec su $JUSER -c "/usr/local/bin/jenkins-slave $1 $2 $3 $4 $5"
