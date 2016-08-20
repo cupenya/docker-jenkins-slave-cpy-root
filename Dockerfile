@@ -42,7 +42,9 @@ RUN /usr/share/elasticsearch/bin/plugin install -t 30s file:///tmp/elasticsearch
 # add docker and setup script for docker
 USER root
 
-RUN curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-1.12.1.tgz && tar --strip-components=1 -xvzf docker-1.12.1.tgz -C /usr/local/bin
+RUN curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-1.10.3.tgz && \
+    tar --strip-components=3 -xvzf docker-1.10.3.tgz -C /usr/local/bin && \
+    rm docker-1.10.3.tgz
 
 COPY setup-docker-and-start-jenkins.sh /setup-docker-and-start-jenkins.sh
 RUN chmod 755 /setup-docker-and-start-jenkins.sh
