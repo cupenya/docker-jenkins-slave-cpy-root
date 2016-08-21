@@ -39,6 +39,15 @@ RUN /usr/share/elasticsearch/bin/plugin install -t 30s file:///tmp/elasticsearch
   rm /tmp/elasticsearch-business-hours-2-3-3-SNAPSHOT.zip
 
 
+# add gcloud command
+
+
+RUN wget https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.zip && \
+    unzip google-cloud-sdk.zip && rm google-cloud-sdk.zip && \
+    google-cloud-sdk/install.sh
+
+
+
 # add docker and setup script for docker
 USER root
 
