@@ -44,7 +44,8 @@ RUN /usr/share/elasticsearch/bin/plugin install -t 30s file:///tmp/elasticsearch
 
 RUN wget https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.zip && \
     unzip google-cloud-sdk.zip && rm google-cloud-sdk.zip && \
-    google-cloud-sdk/install.sh
+    google-cloud-sdk/install.sh && \
+    chown jenkins:jenkins -R /home/jenkins/.config
 
 
 
