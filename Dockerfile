@@ -42,11 +42,11 @@ RUN /usr/share/elasticsearch/bin/plugin install -t 30s file:///tmp/elasticsearch
 # add gcloud command
 
 
-RUN wget https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.zip && \
-    unzip google-cloud-sdk.zip && rm google-cloud-sdk.zip && \
-    google-cloud-sdk/install.sh && \
-    chown jenkins:jenkins -R /home/jenkins/.config
-
+#RUN wget https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.zip && \
+#    unzip google-cloud-sdk.zip && rm google-cloud-sdk.zip && \
+#    google-cloud-sdk/install.sh && \
+#    chown jenkins:jenkins -R /home/jenkins/.config
+#ENV PATH /home/jenkins/google-cloud-sdk/bin/:$PATH
 
 
 # add docker and setup script for docker
