@@ -39,22 +39,8 @@ RUN /usr/share/elasticsearch/bin/plugin install -t 30s file:///tmp/elasticsearch
   rm /tmp/elasticsearch-business-hours-2-3-3-SNAPSHOT.zip
 
 
-# add gcloud command
-
-
-#RUN wget https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.zip && \
-#    unzip google-cloud-sdk.zip && rm google-cloud-sdk.zip && \
-#    google-cloud-sdk/install.sh && \
-#    chown jenkins:jenkins -R /home/jenkins/.config
-#ENV PATH /home/jenkins/google-cloud-sdk/bin/:$PATH
-
-
-# add docker and setup script for docker
+# add docker setup script, docker daemon is bound via host path
 USER root
-
-RUN curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-1.10.3.tgz && \
-    tar --strip-components=3 -xvzf docker-1.10.3.tgz -C /usr/local/bin && \
-    rm docker-1.10.3.tgz
 
 COPY setup-docker-and-start-jenkins.sh /setup-docker-and-start-jenkins.sh
 RUN chmod 755 /setup-docker-and-start-jenkins.sh
