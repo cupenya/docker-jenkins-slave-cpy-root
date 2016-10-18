@@ -38,6 +38,15 @@ COPY elasticsearch-business-hours-2-3-3-SNAPSHOT.zip /tmp
 RUN /usr/share/elasticsearch/bin/plugin install -t 30s file:///tmp/elasticsearch-business-hours-2-3-3-SNAPSHOT.zip && \
   rm /tmp/elasticsearch-business-hours-2-3-3-SNAPSHOT.zip
 
+# add k8s
+
+ENV K8S_VERSION 1.3.7
+
+RUN set -x && \
+    wget -O - https://github.com/kubernetes/kubernetes/releases/download/v${K8S_VERSION}/kubernetes.tar.gz | \
+    tar zxOf - kubernetes/platforms/linux/amd64/kubectl > /bin/kubectl && \
+    chmod +x /bin/kubectl
+
 
 # add docker setup script, docker daemon is bound via host path
 USER root
