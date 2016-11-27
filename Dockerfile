@@ -47,6 +47,10 @@ RUN set -x && \
     tar zxOf - kubernetes/platforms/linux/amd64/kubectl > /bin/kubectl && \
     chmod +x /bin/kubectl
 
+# add other utils required for k8s pipelines
+RUN apt-get install -y jq
+RUN npm install -g mustache
+RUN npm install -g json-merge
 
 # add docker setup script, docker daemon is bound via host path
 USER root
