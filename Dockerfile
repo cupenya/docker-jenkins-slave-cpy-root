@@ -50,7 +50,6 @@ RUN set -x && \
 # add other utils required for k8s pipelines
 RUN apt-get install -y jq
 RUN npm install -g mustache
-RUN npm install -g json-merge
 
 # add docker setup script, docker daemon is bound via host path
 USER root
