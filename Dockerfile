@@ -28,6 +28,7 @@ USER root
 RUN curl -sL https://deb.nodesource.com/setup_4.x | bash - && \
    apt-get update && \
    apt-get install -y nodejs && \
+   npm --global install yarn && \
    npm --global install gulp && \
    npm --global install bower && \
    # fix permissions done during install
