@@ -25,7 +25,7 @@ MAINTAINER Elmar Weber <elmar(.)weber(@)cupenya(.)com>
 
 # add npm, gulp and bower
 USER root
-RUN curl -sL https://deb.nodesource.com/setup_4.x | bash - && \
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
    apt-get update && \
    apt-get install -y nodejs && \
    npm --global install yarn && \
