@@ -44,10 +44,10 @@ RUN /usr/share/elasticsearch/bin/plugin install -t 30s file:///tmp/elasticsearch
 
 # add k8s
 
-ENV K8S_VERSION 1.6.4
+ENV K8S_VERSION 1.14.10
 
 RUN set -x && \
-    wget -O /bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kubectl" && \
+    wget -O /bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v1.14.10/bin/linux/amd64/kubectl" && \
     chmod +x /bin/kubectl
 
 # add other utils required for k8s pipelines
