@@ -18,17 +18,114 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM cupenya/docker-jenkins-slave-mongo-es-ivy2-cache
+FROM ubuntu:16.04
 MAINTAINER Elmar Weber <elmar(.)weber(@)cupenya(.)com>
+
+ENV TERM linux
+
+# Install Java.
+RUN \
+  apt-get update && \
+  apt-get install -y openjdk-8-jdk
+
+
+# Install packages that are too stupid to not have
+RUN apt-get install -y unzip curl wget
+
+
 
 USER root
 
-# cleanup due to Hash Sum mismatch
-RUN rm -rf /var/lib/apt/lists/*
-RUN apt-get update
 
+
+## Base Setup
+
+# install basic build tools
+RUN apt-get update && \
+    apt-get install -y git
+
+# get supervisord up and running
+RUN apt-get update && \
+    apt-get install -y supervisor sudo
+
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY sudoers /etc/sudoers
+
+ENV HOME /home/jenkins
+RUN useradd -c "Jenkins user" -d $HOME -m -G sudo jenkins
+
+ARG VERSION=4.2
+RUN curl --create-dirs -sSLo /usr/share/jenkins/slave.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
+     && chmod 755 /usr/share/jenkins \
+     && chmod 644 /usr/share/jenkins/slave.jar
+
+COPY jenkins-slave /usr/local/bin/jenkins-slave
+
+
+WORKDIR /home/jenkins
+USER jenkins
+
+ENTRYPOINT ["jenkins-slave"]
+
+## End Base Setup
+
+## Setup Mongo
+
+USER root
+
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+
+RUN echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+RUN apt-get update && apt-get install -y mongodb-org=3.4.7 mongodb-org-server=3.4.7 mongodb-org-shell=3.4.7 mongodb-org-mongos=3.4.7 mongodb-org-tools=3.4.7
+RUN mkdir -p /data/db
+
+COPY supervisord-mongod.conf /etc/supervisor/conf.d/mongod.conf
+
+# restore user for jenkins slave
+USER jenkins
+
+
+## End Setup mongo
+
+## Setup Elastic Search
+USER root
+RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 46095ACC8548582C1A2699A9D27D666CD88E42B4
+
+ENV ELASTICSEARCH_VERSION 2.3.3
+ENV ELASTICSEARCH_REPO_BASE http://packages.elasticsearch.org/elasticsearch/2.x/debian
+
+RUN echo "deb $ELASTICSEARCH_REPO_BASE stable main" > /etc/apt/sources.list.d/elasticsearch.list && \
+  apt-get update && \
+  apt-get install -y elasticsearch=$ELASTICSEARCH_VERSION
+
+WORKDIR /usr/share/elasticsearch
+RUN for path in \
+    ./data \
+    ./logs \
+    ./config \
+    ./config/scripts \
+    ; do \
+    mkdir -p "$path"; \
+    chown -R elasticsearch:elasticsearch "$path"; \
+    done
+
+COPY config ./config
+
+COPY supervisord-elasticsearch.conf /etc/supervisor/conf.d/elasticsearch.conf
+
+# Restore user for Jenkins slave
+USER jenkins
+WORKDIR /home/jenkins
+
+
+## End Setup Elastic Search
+
+
+
+## cpy-root setup
+USER root
 # add npm, gulp and bower
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
    apt-get update && \
    apt-get install -y nodejs && \
    npm --global install yarn && \
