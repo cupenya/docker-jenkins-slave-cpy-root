@@ -157,6 +157,14 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
     apt-get update && apt-get install -y google-cloud-sdk
 
+# add docker
+
+
+RUN wget https://download.docker.com/linux/static/stable/x86_64/docker-18.09.7.tgz && \
+    tar xvfz docker-18.09.7.tgz && \
+    mv docker/docker /usr/bin/docker && \
+    rm docker-18.09.7.tgz && \
+    rm -Rf docker
 
 # add docker setup script, docker daemon is bound via host path
 USER root
