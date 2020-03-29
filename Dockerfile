@@ -54,7 +54,7 @@ COPY sudoers /etc/sudoers
 ENV HOME /home/jenkins
 RUN useradd -c "Jenkins user" -d $HOME -m -G sudo jenkins
 
-ARG VERSION=4.2
+ARG VERSION=4.3
 RUN curl --create-dirs -sSLo /usr/share/jenkins/slave.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
      && chmod 755 /usr/share/jenkins \
      && chmod 644 /usr/share/jenkins/slave.jar
